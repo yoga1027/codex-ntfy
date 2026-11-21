@@ -1,0 +1,21 @@
+<resources>
+    <color name="coding_love_icon_background">#FAF9F8</color>
+    <color name="canvas">#F5F7F4</color>
+    <color name="claude_canvas">#FDF0E3</color>
+    <color name="claude_row">#FFF1E2</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_tint">#E0EEE7</color>
+    <color name="ink">#152822</color>
+    <color name="ink_secondary">#52645D</color>
+    <color name="line">#D9E3DD</color>
+    <color name="accent">#17674F</color>
+    <color name="on_accent">#FFFFFF</color>
+    <color name="hero">#123C35</color>
+    <color name="hero_text">#F3FBF6</color>
+    <color name="hero_muted">#BCD6CB</color>
+    <color name="hero_icon">#285248</color>
+    <color name="signal_on">#91E8B7</color>
+    <color name="signal_off">#C1D0CA</color>
+    <color name="signal_wait">#F8D58E</color>
+    <color name="ripple">#1F17674F</color>
+</resources>

@@ -1,0 +1,18 @@
+{
+  "server": "https://ntfy.sh",
+  "topic": "",
+  "sessions_dir": "~/.codex/sessions",
+  "state_dir": ".state",
+  "poll_seconds": 1,
+  "timeout_seconds": 10,
+  "priority": 4,
+  "sources": ["vscode", "cli"],
+  "transport": "tailscale",
+  "oppo_credentials_file": ".state/oppo-credentials.json",
+  "tailscale": {
+    "listen_address": "",
+    "peer_address": "",
+    "port": 8765
+  },
+  "max_notification_age_seconds": 300
+}

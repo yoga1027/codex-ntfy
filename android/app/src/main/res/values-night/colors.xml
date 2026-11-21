@@ -1,0 +1,18 @@
+<resources>
+    <color name="canvas">#111A17</color>
+    <color name="surface">#192521</color>
+    <color name="surface_tint">#264139</color>
+    <color name="ink">#EDF6EF</color>
+    <color name="ink_secondary">#B1C4BA</color>
+    <color name="line">#33463E</color>
+    <color name="accent">#98DDBD</color>
+    <color name="on_accent">#0B3024</color>
+    <color name="hero">#1B4037</color>
+    <color name="hero_text">#F3FBF6</color>
+    <color name="hero_muted">#C1DBCF</color>
+    <color name="hero_icon">#2B5448</color>
+    <color name="signal_on">#91E8B7</color>
+    <color name="signal_off">#C1D0CA</color>
+    <color name="signal_wait">#F8D58E</color>
+    <color name="ripple">#2498DDBD</color>
+</resources>

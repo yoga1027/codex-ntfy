@@ -1,0 +1,96 @@
+import groovy.json.JsonSlurper
+
+plugins {
+    id 'com.android.application' version '8.7.3'
+}
+
+abstract class TailscaleNetworkConfig extends DefaultTask {
+    @Input
+    abstract Property<String> getComputerAddress()
+
+    @OutputDirectory
+    abstract DirectoryProperty getOutputDirectory()
+
+    @TaskAction
+    void writeResource() {
+        def resource = outputDirectory.file('xml/network_security_config.xml').get().asFile
+        resource.parentFile.mkdirs()
+        def address = computerAddress.get()
+        def allowComputer = address ? """
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">${address}</domain>
+    </domain-config>""" : ''
+        resource.setText("""<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />${allowComputer}
+</network-security-config>
+""", 'UTF-8')
+    }
+}
+
+def localConfig = providers.fileContents(rootProject.layout.projectDirectory.file('../config.json')).asText.orNull
+def config = localConfig == null ? [:] : new JsonSlurper().parseText(localConfig)
+def computerAddress = ''
+def phoneAddress = ''
+def endpoint = ''
+if (config.transport == 'tailscale') {
+    def settings = config.tailscale
+    def isTailscaleAddress = { address ->
+        if (!(address instanceof String) || !(address ==~ /100\.(?:[0-9]{1,3}\.){2}[0-9]{1,3}/)) {
+            return false
+        }
+        def octets = address.tokenize('.')
+        return octets[1].toInteger() in 64..127 && octets.every {
+            def value = it.toInteger()
+            value <= 255 && value.toString() == it
+        }
+    }
+    if (!isTailscaleAddress(settings?.listen_address) || !isTailscaleAddress(settings?.peer_address)
+            || settings.listen_address == settings.peer_address) {
+        throw new GradleException('Set distinct Tailscale IPv4 addresses in config.json (tailscale.listen_address and tailscale.peer_address).')
+    }
+    if (!(settings.port instanceof Integer) || !(settings.port in 1024..65535)) {
+        throw new GradleException('Set tailscale.port to an integer from 1024 through 65535 in config.json.')
+    }
+    computerAddress = settings.listen_address
+    phoneAddress = settings.peer_address
+    endpoint = "http://${computerAddress}:${settings.port}"
+}
+
+android {
+    namespace 'local.codexntfy.opush'
+    compileSdk 35
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    defaultConfig {
+        applicationId providers.gradleProperty('oppoApplicationId').getOrElse('local.codexntfy.opush')
+        minSdk 26
+        targetSdk 34
+        versionCode 18
+        versionName '0.17'
+        buildConfigField 'String', 'TAILSCALE_ENDPOINT', "\"${endpoint}\""
+        buildConfigField 'String', 'TAILSCALE_PHONE_IP', "\"${phoneAddress}\""
+    }
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        def networkConfig = tasks.register("generate${variant.name.capitalize()}TailscaleNetworkConfig", TailscaleNetworkConfig) {
+            it.computerAddress.set(computerAddress)
+        }
+        variant.sources.res.addGeneratedSourceDirectory(networkConfig) { it.outputDirectory }
+    }
+}
+
+def sdk = file('libs/opush-3.5.2.aar')
+if (!sdk.isFile()) {
+    throw new GradleException('Missing OPPO PUSH SDK. Run ./fetch-oppo-sdk.sh from android/.')
+}
+
+dependencies {
+    implementation files(sdk)
+    implementation 'commons-codec:commons-codec:1.16.1'
+}
