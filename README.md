@@ -1,7 +1,11 @@
 # coding love · Codex / Claude Code 手机助手
+使用tailscale通信方式，基于手机app Tailscale和电脑ubuntu Codex_Project_Manager二次开发，在保持电脑ubuntu 在线的情况下，可以实现类似codex手机端类似的交互功能，但是不需要梯子，而且ui界面更简洁，而且不需要梯子，同时兼容claude。
 
 在 Linux 电脑上监听 AI 会话，通过 Tailscale 把完成提醒发到 Android 手机。手机还能查看和续接桌面会话、查额度、管理项目，并在有完整补丁记录时预览、撤回或重新应用单轮改动。只需要通知的话，也可以用 ntfy、QQ 或 OPPO PUSH。
 
+ (电脑ubuntu需要先安装Codex_Project_Manager ，手机端需要先安装 Tailsacle)
+Codex_Project_Manager项目地址为：git@github.com:yoga1027/Codex_Project_Manager.git
+Tailscale 手机app从google play下载，并且部署好自己的tailscale
 ## 快速部署（Linux + Android）
 
 ### 1. 克隆并准备本地配置
